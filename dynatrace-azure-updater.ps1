@@ -2,6 +2,8 @@
 #
 # Before using this script, you need to install the Azure PowerShell: https://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/
 # After that, open a PowerShell window and type 'add-azureaccount'. Enter your azure user-credentials in the prompt that pops up.
+# If you have multiple subscriptions make sure you select the subscription which contains your app. 
+# To list your subscriptions type 'Get-AzureRmSubscription'. To select a subscription type 'Select-AzureSubscription'.
 #
 # usage:
 # .\dynatrace-azure-updater.ps1 <websitename> <deployment-username> <deployment-password> <tenant> <tenanktoken>
@@ -65,7 +67,7 @@ try {
 	$website.AppSettings['RUXIT_TENANT'] = $tenant
 	$website.AppSettings['RUXIT_TENANTTOKEN'] = $tenanttoken
 	$website.AppSettings['WEBSITE_PRIVATE_EXTENSIONS'] = '0' # disable all extensions to recover from potentially corrupted installations
-	Set-AzureWebsite NetCoreFull2 -AppSettings $website.AppSettings
+	Set-AzureWebsite $websitename -AppSettings $website.AppSettings
 } catch {		
 	$ErrorMessage = $_.Exception.Message
 	LogError "error accessing website via Azure PowerShell: $ErrorMessage"
@@ -91,7 +93,7 @@ try {
 	Invoke-RestMethod -Uri "$apiBaseUrl/vfs/SiteExtensions/ruxitAgent/log.txt" -Method GET -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
 
 	$website.AppSettings['WEBSITE_PRIVATE_EXTENSIONS'] = '1' # re-enable extensions
-	Set-AzureWebsite NetCoreFull2 -AppSettings $website.AppSettings
+	Set-AzureWebsite $websitename -AppSettings $website.AppSettings
 } catch {		
 	$ErrorMessage = $_.Exception.Message
 	LogError "error accessing website via Azure PowerShell: $ErrorMessage"

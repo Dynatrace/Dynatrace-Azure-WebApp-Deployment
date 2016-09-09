@@ -6,6 +6,10 @@ Before using this script, you need to install the Azure PowerShell: https://azur
 
 After that, open a PowerShell window and type 'add-azureaccount'. Enter your Azure user-credentials in the prompt that pops up.
 
+If you have multiple subscriptions make sure you select the subscription which contains your app. 
+
+To list your subscriptions type 'Get-AzureRmSubscription'. To select a subscription type 'Select-AzureSubscription'.
+
 usage:
 .\dynatrace-azure-updater.ps1 `websitename` `deployment-username` `deployment-password` `tenant` `tenanktoken`
 
