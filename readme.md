@@ -1,7 +1,9 @@
-This script automates the Dynatrace Agent installation for Azure WebApps
+This script automates the Dynatrace SaaS (formerly Ruxit) Agent installation for Azure WebApps
+
+It basically adds the required application settings to your WebApps and installs the Dynatrace Site Extension (https://www.siteextensions.net/packages/ruxitAgent/).
 
 Before using this script, you need to install the Azure PowerShell: https://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/
-After that, open a PowerShell window and type 'add-azureaccount'. Enter your azure user-credentials in the prompt that pops up.
+After that, open a PowerShell window and type 'add-azureaccount'. Enter your Azure user-credentials in the prompt that pops up.
 
 usage:
 .\dynatrace-azure-updater.ps1 <websitename> <deployment-username> <deployment-password> <tenant> <tenanktoken>
