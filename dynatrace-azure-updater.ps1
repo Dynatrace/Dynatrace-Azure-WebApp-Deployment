@@ -1,21 +1,21 @@
-# This script automates the Dynatrace Agent installation for Azure WebApps
+# This script automates the Dynatrace OneAgent installation for Azure WebApps
 #
 # Before using this script, you need to install the Azure PowerShell: https://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/
-# After that, open a PowerShell window and type 'add-azureaccount'. Enter your azure user-credentials in the prompt that pops up.
+# After that, open a PowerShell window and type 'Add-AzureAccount'. Enter your azure user-credentials in the prompt that pops up.
 # If you have multiple subscriptions make sure you select the subscription which contains your app. 
 # To list your subscriptions type 'Get-AzureRmSubscription'. To select a subscription type 'Select-AzureSubscription'.
 #
 # usage:
-# .\dynatrace-azure-updater.ps1 <websitename> <deployment-username> <deployment-password> <tenant> <tenanktoken>
+# .\dynatrace-azure-updater.ps1 <websitename> <deployment-username> <deployment-password> <environment> <environment token>
 #
 # <websitename> the name of your Azure WebApp
 # <deployment-username>/<deployment-password> Your azure deployment credentials, which you can set in the azure portal under "App Deployment" > "Deployment credentials"
-# <tenant>/<tenanktoken> Your Dynatrace tenantid (environmentid) and tenant token, which you can find in Dynatrace under "Deploy Dynatrace"
+# <environment>/<environment token> Your Dynatrace environment ID and token, which you can find in Dynatrace under "Deploy Dynatrace"
 
 param (
 	[Parameter(Mandatory=$true)][string]$websitename,
 	[Parameter(Mandatory=$true)][string]$username,
-    [string]$password = $( Read-Host "Input password, please" ),
+	[string]$password = $( Read-Host "Input password, please" ),
 	[Parameter(Mandatory=$true)][string]$tenant,
 	[Parameter(Mandatory=$true)][string]$tenanttoken
 )
@@ -64,8 +64,8 @@ try {
 	$website = Get-AzureWebsite $websitename
 
 	LogInfo "updating settings for '$websitename'..."
-	$website.AppSettings['RUXIT_TENANT'] = $tenant
-	$website.AppSettings['RUXIT_TENANTTOKEN'] = $tenanttoken
+	$website.AppSettings['DT_TENANT'] = $tenant
+	$website.AppSettings['DT_API_TOKEN'] = $tenanttoken
 	$website.AppSettings['WEBSITE_PRIVATE_EXTENSIONS'] = '0' # disable all extensions to recover from potentially corrupted installations
 	Set-AzureWebsite $websitename -AppSettings $website.AppSettings
 } catch {		
@@ -82,15 +82,16 @@ try {
 	# uninstall extension
 	LogInfo "uninstalling extension for '$websitename'..."
 	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/ruxitAgent" -Method DELETE -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/Dynatrace" -Method DELETE -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
 
 	# install extension
 	LogInfo "installing extension for '$websitename'..."
-	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/ruxitAgent" -Method PUT -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/Dynatrace" -Method PUT -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
 
 	# get log file
-	LogInfo "SiteExtensions/ruxitAgent/log.txt"
+	LogInfo "SiteExtensions/Dynatrace/log.txt"
 	LogInfo "================================="
-	Invoke-RestMethod -Uri "$apiBaseUrl/vfs/SiteExtensions/ruxitAgent/log.txt" -Method GET -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+	Invoke-RestMethod -Uri "$apiBaseUrl/vfs/SiteExtensions/Dynatrace/log.txt" -Method GET -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
 
 	$website.AppSettings['WEBSITE_PRIVATE_EXTENSIONS'] = '1' # re-enable extensions
 	Set-AzureWebsite $websitename -AppSettings $website.AppSettings
