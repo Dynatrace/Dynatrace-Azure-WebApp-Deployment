@@ -6,11 +6,11 @@
 # To list your subscriptions type 'Get-AzureRmSubscription'. To select a subscription type 'Select-AzureSubscription'.
 #
 # usage:
-# .\dynatrace-azure-updater.ps1 <websitename> <deployment-username> <deployment-password> <environment> <environment token>
+# .\dynatrace-azure-updater.ps1 <websitename> <deployment-username> <deployment-password> <environment> <API token>
 #
 # <websitename> the name of your Azure WebApp
 # <deployment-username>/<deployment-password> Your azure deployment credentials, which you can set in the azure portal under "App Deployment" > "Deployment credentials"
-# <environment>/<environment token> Your Dynatrace environment ID and token, which you can find in Dynatrace under "Deploy Dynatrace"
+# <environment>/<API token> Your Dynatrace environment ID and token, which you can find in Dynatrace under "Deploy Dynatrace"
 
 param (
 	[Parameter(Mandatory=$true)][string]$websitename,
