@@ -11,8 +11,8 @@ If you have multiple subscriptions make sure you select the subscription which c
 To list your subscriptions type 'Get-AzureRmSubscription'. To select a subscription type 'Select-AzureSubscription'.
 
 usage:
-.\dynatrace-azure-updater.ps1 `websitename` `deployment-username` `deployment-password` `tenant` `tenanktoken`
+.\dynatrace-azure-updater.ps1 `websitename` `deployment-username` `deployment-password` `tenant` `apitoken`
 
  * `websitename` the name of your Azure WebApp or API App
  * `deployment-username`/`deployment-password` Your azure deployment credentials, which you can set in the azure portal under "App Deployment" > "Deployment credentials"
- * `tenant`/`tenanktoken` Your Dynatrace environment ID and environment token, which you can find in Dynatrace under "Deploy Dynatrace"
+ * `tenant`/`apitoken` Your Dynatrace environment ID and API token, which you can find in Dynatrace under "Deploy Dynatrace"
