@@ -74,16 +74,31 @@ try {
 	ExitFailed
 }
 
-try {
+
 	$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))
 
 	$apiBaseUrl = "https://$websitename.scm.azurewebsites.net/api"
 
-	# uninstall extension
-	LogInfo "uninstalling extension for '$websitename'..."
+try {
+	# uninstall extension ruxitAgent
+	LogInfo "Uninstalling ruxitAgent extension for '$websitename'..."
 	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/ruxitAgent" -Method DELETE -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
-	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/Dynatrace" -Method DELETE -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+	LogInfo "Uninstalled ruxitAgent extension for '$websitename'"
+} catch {		
+	$ErrorMessage = $_.Exception.Message
+	LogInfo "Unable to uninstall ruxitAgent extension. Probably it's not installed, so you can safely ignore this message."
+}
 
+try {
+	LogInfo "Uninstalling Dynatrace extension for '$websitename'..."
+	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/Dynatrace" -Method DELETE -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+	LogInfo "Uninstalled Dynatrace extension for '$websitename'"
+} catch {		
+	$ErrorMessage = $_.Exception.Message
+	LogInfo "Unable to uninstall Dynatrace extension. Probably it's not installed, so you can safely ignore this message."
+}
+
+try {
 	# install extension
 	LogInfo "installing extension for '$websitename'..."
 	Invoke-RestMethod -Uri "$apiBaseUrl/siteextensions/Dynatrace" -Method PUT -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
