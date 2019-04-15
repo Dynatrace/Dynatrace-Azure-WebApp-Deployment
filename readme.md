@@ -1,3 +1,5 @@
+# Dynatrace Azure WebApp Deployment
+
 This script automates the Dynatrace OneAgent installation for the Azure WebApps PaaS-offering.
 
 It basically adds the required application settings to your WebApps and installs the Dynatrace Site Extension (https://www.siteextensions.net/packages/Dynatrace).
